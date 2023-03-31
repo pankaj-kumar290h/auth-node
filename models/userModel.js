@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
   passwordConfirm: {
     type: String,
     required: [true, "plz confirm password"],
+    validate: {
+      validator: function (el) {
+        return el === this.password;
+      },
+      message: "Password are note same!",
+    },
   },
 });
 
