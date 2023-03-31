@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator"); // for validation
 
+const bcrypt = require("bcryptjs");
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -29,6 +31,17 @@ const userSchema = new mongoose.Schema({
       message: "Password are note same!",
     },
   },
+});
+
+// moongose middlewear
+
+userSchema.pre("save", async function (next) {
+  //only run this function if password is modefied
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 12); //hash a passwod and then delet confirm password
+  this.passwordConfirm = undefined;
+  next();
 });
 
 const User = mongoose.model("User", userSchema);
