@@ -1,6 +1,7 @@
 const express = require("express");
 
 const AppError = require("./util/appError");
+const globalErrorHandler = require("./controllers/errorController");
 
 const userRoute = require("./routes/userRoute");
 const authRoute = require("./routes/authRoute");
@@ -21,13 +22,5 @@ app.all("*", (req, res, next) => {
   next(new AppError("page not found", 404));
 });
 
-app.use((err, req, res, next) => {
-  err.statusCode = err.seratusCode || 500;
-  err.status = err.status || "error";
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+app.use(globalErrorHandler);
 module.exports = app;
